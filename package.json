@@ -12,9 +12,10 @@
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "antd": "^6.1.2",
+    "pdfjs-dist": "^5.4.449",
+    "print-setu": "github:mishrabhavesh/print-setu#61d9ec51cbd7549d0c323e31279f0865f555ac86",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "print-setu": "github:mishrabhavesh/print-setu#61d9ec51cbd7549d0c323e31279f0865f555ac86"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -106,12 +106,12 @@ export function usePrinter() {
     try {
       setIsScanning(true);
       setError(null);
-      
+
       return new Promise((resolve, reject) => {
         const unsubscribe = printer.on("USB_PRINTERS_RESULT", (data) => {
           unsubscribe();
           console.log(data, 'data');
-          
+
           setIsScanning(false);
           if (data.payload?.success) {
             setPrinters(data.payload.data || []);
@@ -121,7 +121,7 @@ export function usePrinter() {
             reject(data);
           }
         });
-        
+
         printer.scanPrinters().catch((err) => {
           setIsScanning(false);
           setError(err.message);
@@ -140,7 +140,7 @@ export function usePrinter() {
     setIsConnecting(true);
     try {
       setError(null);
-      
+
       return new Promise((resolve, reject) => {
         const unsubscribe = printer.on("PRINTER_CONNECTED", (data) => {
           unsubscribe();
@@ -150,10 +150,10 @@ export function usePrinter() {
             resolve(data.payload.data);
           } else {
             setError(data.error || "Failed to connect to printer");
-            reject(data);
+            reject(data); 
           }
         });
-        
+
         return printer.connectPrinter(printerId).catch((err) => {
           setError(err.message);
           reject(err);
@@ -166,50 +166,26 @@ export function usePrinter() {
   }, []);
 
   const disconnectPrinter = useCallback(async () => {
-    try {
-      setError(null);
-      
-      return new Promise((resolve, reject) => {
-        const unsubscribe = printer.on("PRINTER_DISCONNECTED", (data) => {
-          unsubscribe();
-          if (data.payload) {
-            resolve(data.payload);
-            setConnectedPrinter(null);
-            setIsConnected(false);
-            setPrinters([]);
-            setError(null);
-          } else {
-            setError(data.error || "Failed to disconnect from printer");
-            reject(data);
-          }
-        });
-
-        printer.disconnectPrinter(connectPrinter.id).catch((err) => {
-          setError(err.message);
-          reject(err);
-        });
-      });
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    }
+    setConnectedPrinter(null);
+    setPrinters([]);
+    setError(null);
   }, []);
 
   const print = useCallback(async (printerId, base64Data) => {
     try {
       setError(null);
-      
+
       return new Promise((resolve, reject) => {
         const unsubscribe = printer.on("PRINT_RESULT", (data) => {
-          unsubscribe();
-          if (data.success) {
+          unsubscribe();          
+          if (data.payload) {
             resolve(data);
           } else {
             setError(data.error || "Failed to print");
             reject(data);
           }
         });
-        
+
         printer.print(printerId, base64Data).catch((err) => {
           setError(err.message);
           reject(err);
