@@ -21,7 +21,7 @@ import {
 } from "@ant-design/icons";
 
 import { usePrinter } from "./usePrinter";
-import { buildPrintData } from "./print/printService"; // ✅ NEW
+import { buildPrintData } from "./print/printService";
 
 const { Header, Content } = Layout;
 const { TextArea } = Input;
@@ -45,7 +45,6 @@ function App() {
     isConnecting,
   } = usePrinter();
 
-  // 🔥 UPDATED: POS-safe print handler
   const handlePrint = async () => {
     if (!connectedPrinter) {
       message.error("Printer not connected");
@@ -58,16 +57,12 @@ function App() {
     }
 
     try {
-      // ✅ Convert → ESC/POS → Base64
       const base64EscPos = await buildPrintData({
         text: text.trim() ? text : undefined,
         file: file ?? undefined,
       });
 
-      const result = await print(
-        connectedPrinter.id,
-        base64EscPos
-      );
+      const result = await print(connectedPrinter.id, base64EscPos);
 
       if (result.success) {
         message.success("Print job submitted successfully");
@@ -76,7 +71,6 @@ function App() {
       } else {
         message.error(result.message || "Print job failed");
       }
-
     } catch (err) {
       console.error("Print error:", err);
       message.error(err.message || "Print failed");
@@ -105,6 +99,42 @@ function App() {
       <Content style={{ padding: 24 }}>
         <Card style={{ maxWidth: 600, margin: "0 auto" }}>
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
+            <Alert
+              message="🖨️ Setup Instructions"
+              description={
+                <div style={{ lineHeight: "1.8" }}>
+                  <p style={{ marginBottom: 8, fontWeight: 500 }}>
+                    Before using this demo, please complete the following steps:
+                  </p>
+                  <ol style={{ marginLeft: 16, marginBottom: 0 }}>
+                    <li>
+                      Download the Windows desktop app from{" "}
+                      <a
+                        href="https://drive.google.com/drive/u/1/folders/1odBnoRzXz_Q4cKpnvWNxoPfzxcjZkPeq"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontWeight: 500 }}
+                      >
+                        Google Drive
+                      </a>
+                    </li>
+                    <li>Run the desktop app on your Windows machine</li>
+                    <li>
+                      Ensure your printer is <strong>plugged in</strong> and
+                      turned on
+                    </li>
+                    <li>
+                      Once the desktop app is running, this web app will connect
+                      automatically
+                    </li>
+                  </ol>
+                </div>
+              }
+              type="info"
+              showIcon
+              style={{ marginBottom: 8 }}
+            />
+
             {!isConnected && (
               <Alert
                 message="WebSocket Disconnected"
