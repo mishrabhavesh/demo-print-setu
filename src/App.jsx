@@ -200,7 +200,6 @@ function App() {
                 setText(e.target.value);
                 if (e.target.value.trim()) setFile(null);
               }}
-              disabled={!!file}
             />
 
             <Button
